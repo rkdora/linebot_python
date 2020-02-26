@@ -1,4 +1,5 @@
 from flask import Flask, request, abort
+from flask.ext.sqlalchemy import SQLAlchemy
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -11,10 +12,20 @@ from linebot.models import (
 )
 import os
 import random
-import requests as rq
-import json
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+db = SQLAlchemy(app)
+
+# モデル作成
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    def __init__(self, userMessage):
+        self.userMessage = userMessage
+    
+    def __repr__(self):
+        return '<User %r>' % self.username
 
 #環境変数取得
 LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
@@ -23,15 +34,11 @@ LINE_CHANNEL_SECRET = os.environ["LINE_CHANNEL_SECRET"]
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
-def get_weather_info(userMessage):
-    url = 'http://weather.livedoor.com/forecast/webservice/json/v1?'
-    city_params = {'city': '400040'}
-    data = rq.get(url, params=city_params)
-    content = json.loads(data.text)
-    print(content)
-    content_text = format(content['description']['text'])
-    return content_text
-
+def record_message(userMessage):
+    reg = Message(userMessage)
+    db.session.add(reg)
+    db.session.commit()
+    return 'saved'
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -55,7 +62,7 @@ def callback():
 def handle_message(event):
 #    オウム
 #    message = event.message.text
-    message = get_weather_info(event.message.text)
+    message = record_message(event.message.text)
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=message))
