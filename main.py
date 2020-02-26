@@ -41,7 +41,7 @@ def record_message(userMessage):
 
 
     all_messages = db.session.query(Message).all()
-    message = all_messages[0].userMessage
+    message = all_messages[0].usermessage
     return message
 
 @app.route("/callback", methods=['POST'])
