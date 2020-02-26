@@ -24,8 +24,8 @@ class Message(db.Model):
     def __init__(self, usermessage):
         self.usermessage = usermessage
     
-    def __repr__(self):
-        return '<Message %r>' % self.usermessage
+#    def __repr__(self):
+#        return '<Message %r>' % self.usermessage
 
 #環境変数取得
 LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
