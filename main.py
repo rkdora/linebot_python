@@ -20,10 +20,12 @@ db = SQLAlchemy(app)
 # モデル作成
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    userMessage = db.Column(db.String(80))
-    def __init__(self, userMessage):
-        self.userMessage = userMessage
+    usermessage = db.Column(db.String(80))
+    def __init__(self, usermessage):
+        self.usermessage = usermessage
     
+     def __repr__(self):
+        return '<Message %r>' % self.usermessage
 
 #環境変数取得
 LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
@@ -38,7 +40,7 @@ def record_message(userMessage):
     db.session.commit()
 
 
-    all_messages = Message.query.all()
+    all_messages = db.session.query(Message).all()
     message = all_messages[0].userMessage
     return message
 
