@@ -20,12 +20,12 @@ db = SQLAlchemy(app)
 # モデル作成
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
+    userMessage = db.Column(db.String(80), unique=True)
     def __init__(self, userMessage):
         self.userMessage = userMessage
     
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.userMessage
 
 #環境変数取得
 LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
