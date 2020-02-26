@@ -20,12 +20,10 @@ db = SQLAlchemy(app)
 # モデル作成
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    userMessage = db.Column(db.String(80), unique=True)
+    userMessage = db.Column(db.String(80))
     def __init__(self, userMessage):
         self.userMessage = userMessage
     
-    def __repr__(self):
-        return '<User %r>' % self.userMessage
 
 #環境変数取得
 LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
@@ -38,7 +36,11 @@ def record_message(userMessage):
     reg = Message(userMessage)
     db.session.add(reg)
     db.session.commit()
-    return 'saved'
+
+
+    all_messages = Message.query.all()
+    message = all_messages[0].userMessage
+    return message
 
 @app.route("/callback", methods=['POST'])
 def callback():
