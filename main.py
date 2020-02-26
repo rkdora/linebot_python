@@ -11,6 +11,7 @@ from linebot.models import (
 )
 import os
 import random
+import requests as rq
 import json
 
 app = Flask(__name__)
@@ -23,7 +24,7 @@ line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
 def get_weather_info(userMessage):
-    data = requests.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=400040')
+    data = rq.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=400040')
     print(data)
     content = json.loads(data.text)
     print(format(content['description']['text']))
