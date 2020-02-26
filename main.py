@@ -24,11 +24,11 @@ line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
 def get_weather_info(userMessage):
-    data = rq.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=400040')
+    url = 'http://weather.livedoor.com/forecast/webservice/json/v1?'
+    query_params = {'city': '250010'}
+    data = rq.get(url, params=query_params).json()
     print(data)
-    content = json.loads(data.text)
-    print(format(content['description']['text']))
-    return format(content['description']['text']) 
+    return data
 
 
 @app.route("/callback", methods=['POST'])
