@@ -26,9 +26,11 @@ handler = WebhookHandler(LINE_CHANNEL_SECRET)
 def get_weather_info(userMessage):
     url = 'http://weather.livedoor.com/forecast/webservice/json/v1?'
     query_params = {'city': '250010'}
-    data = rq.get(url, params=query_params).json()
-    print(data)
-    return data
+    data = rq.get(url, params=query_params)
+    content = json.loads(data.text)
+    print(content)
+    content_text = format(content['description']['text'])
+    return content_text
 
 
 @app.route("/callback", methods=['POST'])
